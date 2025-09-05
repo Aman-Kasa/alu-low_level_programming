@@ -1,13 +1,13 @@
 #include <unistd.h>
 
 /**
- * main - prints the quote to standard error
+ * main - Prints the quote to standard error
  *
- * Return: Always 1
+ * Return: 1 (Failure)
  */
 int main(void)
 {
-    char *msg = "and that piece of art is useful\" - Dora Korpar, 2015-10-19\n";
-    write(2, msg, 59); /* 59 is the length of the string */
-    return (1);
+	write(2, "and that piece of art is useful\" - Dora Korpar, ", 47);
+	write(2, "2015-10-19\n", 11);
+	return (1);
 }
