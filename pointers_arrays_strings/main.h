@@ -31,5 +31,7 @@ void print_array(int *a, int n);
 /* Task 9 */
 char *_strcpy(char *dest, char *src);
 
-#endif /* MAIN_H */
+/* _putchar prototype */
+int _putchar(char c);
 
+#endif /* MAIN_H */
