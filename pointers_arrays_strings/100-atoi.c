@@ -3,34 +3,42 @@
 
 /**
  * _atoi - convert a string to an integer
- * @s: pointer to the string to convert
- *
- * Return: integer value or 0 if no digits found
+ * @s: string to convert
+ * Return: integer value or 0
  */
 int _atoi(char *s)
 {
-    int i = 0, neg_count = 0, sign = 1, result = 0;
+	int i = 0, sign = 1, result = 0;
+	int found_digit = 0;
 
-    while (s[i] != '\0' && (s[i] < '0' || s[i] > '9'))
-    {
-        if (s[i] == '-')
-            neg_count++;
-        i++;
-    }
+	/* Skip non-digit characters, handle signs */
+	while (s[i] != '\0')
+	{
+		if (s[i] == '-')
+			sign *= -1;
+		else if (s[i] >= '0' && s[i] <= '9')
+		{
+			found_digit = 1;
+			break;
+		}
+		i++;
+	}
 
-    if (neg_count % 2 != 0)
-        sign = -1;
+	if (!found_digit)
+		return (0);
 
-    while (s[i] >= '0' && s[i] <= '9')
-    {
-        int digit = s[i] - '0';
+	/* Convert digits */
+	while (s[i] >= '0' && s[i] <= '9')
+	{
+		int digit = s[i] - '0';
 
-        if (result > (INT_MAX - digit) / 10)
-            return (sign == 1 ? INT_MAX : INT_MIN);
+		/* Check overflow */
+		if (result > (INT_MAX - digit) / 10)
+			return (sign == 1 ? INT_MAX : INT_MIN);
 
-        result = result * 10 + digit;
-        i++;
-    }
+		result = result * 10 + digit;
+		i++;
+	}
 
-    return (result * sign);
+	return (result * sign);
 }

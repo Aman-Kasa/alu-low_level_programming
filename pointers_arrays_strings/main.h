@@ -34,4 +34,7 @@ char *_strcpy(char *dest, char *src);
 /* _putchar prototype */
 int _putchar(char c);
 
+/* Advanced Task 10 */
+int _atoi(char *s);
+
 #endif /* MAIN_H */
