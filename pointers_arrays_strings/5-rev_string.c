@@ -8,19 +8,18 @@
  */
 void rev_string(char *s)
 {
-    int i = 0, j = 0;
-    char temp;
+	int i = 0, j;
+	char tmp;
 
-    while (s[j] != '\0')
-        j++;
+	/* find the string length */
+	while (s[i] != '\0')
+		i++;
 
-    j--;
-    while (i < j)
-    {
-        temp = s[i];
-        s[i] = s[j];
-        s[j] = temp;
-        i++;
-        j--;
-    }
+	/* reverse in-place */
+	for (j = 0; j < i / 2; j++)
+	{
+		tmp = s[j];
+		s[j] = s[i - j - 1];
+		s[i - j - 1] = tmp;
+	}
 }
