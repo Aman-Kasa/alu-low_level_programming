@@ -1,28 +1,18 @@
-/* 101-keygen.c
- * Simple key generator for 101-crackme-style programs.
- * Uses srand/time/getpid to seed and prints an 8-char password.
- */
-
+/* 101-keygen_time_alnum.c */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
 
 int main(void)
 {
-	const char *pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	                   "abcdefghijklmnopqrstuvwxyz"
-	                   "0123456789";
-	const int pool_len = 62; /* 26 + 26 + 10 */
-	const int passlen = 8;   /* change length if needed */
-	int i;
+    const char *pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    int poollen = 62;
+    int i;
 
-	/* seed with time + pid to reduce collisions */
-	srand((unsigned int)(time(NULL) ^ (getpid() << 16)));
-
-	for (i = 0; i < passlen; i++)
-		putchar(pool[rand() % pool_len]);
-	putchar('\n');
-
-	return (0);
+    srand((unsigned int)time(NULL));
+    for (i = 0; i < 8; i++)
+        putchar(pool[rand() % poollen]);
+    putchar('\n');
+    return 0;
 }
+
