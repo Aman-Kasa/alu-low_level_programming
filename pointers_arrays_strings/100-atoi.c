@@ -11,7 +11,6 @@ int _atoi(char *s)
 {
 	int i = 0, sign = 1, num = 0, digit;
 
-	/* Skip non-digit chars and handle + / - signs */
 	while (s[i])
 	{
 		if (s[i] == '-')
@@ -23,12 +22,11 @@ int _atoi(char *s)
 		i++;
 	}
 
-	/* Convert digits */
 	while (s[i] >= '0' && s[i] <= '9')
 	{
 		digit = s[i] - '0';
 
-		/* Check overflow before multiplying or adding */
+		/* Prevent overflow */
 		if (sign == 1 && num > (INT_MAX - digit) / 10)
 			return (INT_MAX);
 		if (sign == -1 && num > (-(INT_MIN + digit)) / 10)
