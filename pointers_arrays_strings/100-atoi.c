@@ -10,7 +10,7 @@
 int _atoi(char *s)
 {
 	int i = 0, sign = 1, digits_found = 0;
-	unsigned int result = 0;
+	int result = 0;
 	int digit;
 
 	while (s[i] != '\0')
@@ -26,10 +26,10 @@ int _atoi(char *s)
 
 			if (sign == 1 && result > (INT_MAX - digit) / 10)
 				return (INT_MAX);
-			if (sign == -1 && result > ((unsigned int)INT_MAX + 1 - digit) / 10)
+			if (sign == -1 && result < (INT_MIN + digit) / 10)
 				return (INT_MIN);
 
-			result = result * 10 + digit;
+			result = result * 10 + sign * digit;
 		}
 		else if (digits_found)
 			break;
@@ -40,12 +40,6 @@ int _atoi(char *s)
 	if (!digits_found)
 		return (0);
 
-	if (sign == -1)
-	{
-		if (result == (unsigned int)INT_MAX + 1)
-			return (INT_MIN);
-		return (-(int)result);
-	}
-	return ((int)result);
+	return (result);
 }
 
