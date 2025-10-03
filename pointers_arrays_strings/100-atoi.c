@@ -1,30 +1,47 @@
+#include "main.h"
+
+/**
+ * _atoi - Converts a string to an integer.
+ * @s: The input string
+ *
+ * Return: Converted integer, or 0 if no numbers found.
+ */
 int _atoi(char *s)
 {
-	int i = 0, sign = 1;
-	unsigned int num = 0;
-	int digit_found = 0;
+	int i, sign, num, digits_found, digit_val;
 
-	while (s[i])
+	i = 0;
+	sign = 1;
+	num = 0;
+	digits_found = 0;
+
+	while (s[i] != '\0')
 	{
 		if (s[i] == '-')
 			sign *= -1;
+		else if (s[i] == '+')
+			;
 		else if (s[i] >= '0' && s[i] <= '9')
 		{
-			digit_found = 1;
-			unsigned int digit = s[i] - '0';
+			digit_val = s[i] - '0';
+			digits_found = 1;
 
-			if (sign == 1 && num > (2147483647 - digit) / 10)
-				return 2147483647; // handle overflow
-			if (sign == -1 && num > (2147483648U - digit) / 10)
-				return -2147483648; // handle INT_MIN safely
+			/* Overflow check for positive numbers */
+			if (sign == 1 && num > (2147483647 - digit_val) / 10)
+				return (2147483647);
 
-			num = num * 10 + digit;
+			/* Overflow check for negative numbers */
+			if (sign == -1 && num > (2147483648 - digit_val) / 10)
+				return (-2147483648);
+
+			num = num * 10 + digit_val;
 		}
-		else if (digit_found)
-			break; // stop at first non-digit after number
+		else if (digits_found)
+			break;
+
 		i++;
 	}
 
-	return (int)(sign * (int)num);
+	return (sign * num);
 }
 
