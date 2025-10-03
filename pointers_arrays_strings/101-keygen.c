@@ -1,25 +1,27 @@
-/* brute-keygen.c - generate candidate for each seed in window */
+/* 101-keygen.c - key generator that accepts optional seed (C90) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-void make_key(unsigned int seed, char *out) {
+int main(int argc, char **argv)
+{
     const char *pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    int poollen = 62, i;
-    srand(seed);
-    for (i = 0; i < 8; i++)
-        out[i] = pool[rand() % poollen];
-    out[8] = '\0';
-}
+    unsigned int seed;
+    int pool_len = 62;
+    int i;
 
-int main(void) {
-    unsigned int now = (unsigned int)time(NULL);
-    char key[9];
-    int offset;
-    for (offset = -5; offset <= 5; offset++) {
-        make_key(now + offset, key);
-        printf("seed %u -> %s\n", now + offset, key);
-    }
-    return 0;
+    if (argc == 2)
+        seed = (unsigned int)atoi(argv[1]);
+    else
+        seed = (unsigned int)time(NULL);
+
+    printf("Seed: %u\n", seed);
+    srand(seed);
+
+    for (i = 0; i < 8; i++)
+        putchar(pool[rand() % pool_len]);
+    putchar('\n');
+
+    return (0);
 }
 
