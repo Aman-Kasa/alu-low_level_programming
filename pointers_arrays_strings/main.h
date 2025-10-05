@@ -1,40 +1,8 @@
-#ifndef MAIN_H
-#define MAIN_H
-
-/* Task 0 */
-void reset_to_98(int *n);
-
-/* Task 1 */
-void swap_int(int *a, int *b);
-
-/* Task 2 */
-int _strlen(char *s);
-
-/* Task 3 */
-void _puts(char *str);
-
-/* Task 4 */
-void print_rev(char *s);
-
-/* Task 5 */
-void rev_string(char *s);
-
-/* Task 6 */
-void puts2(char *str);
-
-/* Task 7 */
-void puts_half(char *str);
-
-/* Task 8 */
-void print_array(int *a, int n);
-
-/* Task 9 */
-char *_strcpy(char *dest, char *src);
-
-/* _putchar prototype */
 int _putchar(char c);
-
-/* Advanced Task 10 */
-int _atoi(char *s);
-
-#endif /* MAIN_H */
+void reset_to_98(int *n);
+void swap_int(int *a, int *b);
+int _strlen(char *s);
+void _puts(char *str);
+void print_rev(char *s);
+void rev_string(char *s);
+void puts2(char *str);
