@@ -1,27 +1,22 @@
-/* 101-keygen.c - seed-aware keygen (C90) */
-#include <stdio.h>
+#include "main.h"
 #include <stdlib.h>
 #include <time.h>
-
-int main(int argc, char **argv)
+#include <stdio.h>
+/**
+ */
+int main(void)
 {
-    const char *pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    unsigned int seed;
-    int pool_len = 62;
-    char key[9];
-    int i;
+int pass, sum;
 
-    if (argc == 2)
-        seed = (unsigned int)atoi(argv[1]);
-    else
-        seed = (unsigned int)time(NULL);
+	srand(time(NULL));
+	sum = 0;
+	while (sum <= 2645)
+	{
+		pass = (rand() % 128);
+		sum += pass;
+		printf("%c", pass);
+	}
+	printf("%c", 2772 - sum);
 
-    srand(seed);
-    for (i = 0; i < 8; i++)
-        key[i] = pool[rand() % pool_len];
-    key[8] = '\0';
-    printf("%s\n", key);
-
-    return (0);
+	return (0);
 }
-
