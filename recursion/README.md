@@ -1,110 +1,108 @@
-# C - Recursion
+![C - Recursion](https://imgs.search.brave.com/Z9PgVQ0oevafqX1xLwntK5ygQc-JO1ovBhhcAvKCHuY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/ZnJlZWNvZGVjYW1w/Lm9yZy9uZXdzL2Nv/bnRlbnQvaW1hZ2Vz/L3NpemUvdzIwMDAv/MjAyMS8wNy9yZWN1/cnNpb24ucG5n)
 
-## Project Overview
-This project contains a set of recursive functions implemented in C as part of the ALU Low-Level Programming course. The goal is to learn how recursion works, when to use it, and how to implement recursive solutions without using loops or global/static variables.
+######Project Overview
 
----
+- This project is part of the ALX Low-Level Programming curriculum and focuses on recursion in C. Recursion is a technique where a function calls itself to solve smaller instances of a problem until a base case is reached.
 
-## Learning Objectives
-By the end of this project, you should be able to:
+- The goal of this project is to implement several recursive functions without using loops, static variables, or standard library functions, except for _putchar for output. Each function demonstrates a fundamental recursive concept, ranging from simple string manipulation to advanced problem-solving tasks.
 
-- Explain what recursion is.
-- Implement recursive functions in C.
-- Identify situations where recursion is appropriate.
-- Identify situations where recursion should be avoided.
-
----
-
-## Requirements
-- Allowed editors: `vi`, `vim`, `emacs`
-- All files compiled on Ubuntu 20.04 LTS using GCC with options: `-Wall -Werror -Wextra -pedantic -std=gnu89`
-- All files end with a new line
-- Code follows Betty style (checked using `betty-style.pl` and `betty-doc.pl`)
-- No global variables
-- No more than 5 functions per file
-- No loops (`for`, `while`, `do-while`)
-- No static variables
-- No standard library functions (`printf`, `puts`, etc.), except `_putchar`
-
----
-
-## Project Structure
+- All code follows Betty coding style and is compiled on Ubuntu 20.04 LTS using strict GCC flags.
+-------------------------------------------------------------------------------------------------------------------------------
+##Project Structure
 
 recursion/
-├── _putchar.c
-├── main.h
-├── 0-puts_recursion.c
-├── 0-main.c
-├── 1-print_rev_recursion.c
-├── 1-main.c
-├── 2-strlen_recursion.c
-├── 2-main.c
-├── 3-factorial.c
-├── 3-main.c
-├── 4-pow_recursion.c
-├── 4-main.c
-├── 5-sqrt_recursion.c
-├── 5-main.c
-├── 6-is_prime_number.c
-├── 6-main.c
-└── README.md
+│
+├─ _putchar.c             # Function to print a single character
+├─ main.h                 # Header file with function prototypes
+├─ 0-puts_recursion.c     # Prints a string recursively
+├─ 0-main.c
+├─ 1-print_rev_recursion.c# Prints a string in reverse recursively
+├─ 1-main.c
+├─ 2-strlen_recursion.c   # Returns string length recursively
+├─ 2-main.c
+├─ 3-factorial.c          # Computes factorial recursively
+├─ 3-main.c
+├─ 4-pow_recursion.c      # Computes x raised to power y recursively
+├─ 4-main.c
+├─ 5-sqrt_recursion.c     # Computes natural square root recursively
+├─ 5-main.c
+├─ 6-is_prime_number.c    # Checks if a number is prime recursively
+├─ 6-main.c
+├─ 100-is_palindrome.c    # Checks if a string is a palindrome recursively
+├─ 100-main.c
+├─ 101-wildcmp.c          # Compares strings with wildcard (*) recursively
+├─ 101-main.c
+├─ compile_all.sh         # Bash script to compile all tasks at once
+└─ README.md              # Project documentation
+
+--------------------------------------------------------------------------------------------------------------------------------
+##Compilation
+- Using the Bash Script
+
+- The provided compile_all.sh script compiles all tasks and generates executables:
+	- chmod +x compile_all.sh
+	- ./compile_all.sh
 
 
+##Executables generated:
+0-puts, 1-rev, 2-strlen, 3-fact, 4-pow, 5-sqrt, 6-prime, 100-pal, 101-wild
 
----
+##Manual Compilation Example
+- gcc -Wall -Werror -Wextra -pedantic -std=gnu89 _putchar.c 0-main.c 0-puts_recursion.c -o 0-puts
+- ./0-puts
 
-## Functions Implemented
+##Replace 0-main.c and 0-puts_recursion.c with the corresponding files for other tasks.
+-----------------------------------------------------------------------------------------------------------------------------
 
-| Task | Function | Prototype | Description |
-|------|----------|-----------|-------------|
-| 0 | `_puts_recursion` | `void _puts_recursion(char *s);` | Prints a string followed by a new line recursively |
-| 1 | `_print_rev_recursion` | `void _print_rev_recursion(char *s);` | Prints a string in reverse recursively |
-| 2 | `_strlen_recursion` | `int _strlen_recursion(char *s);` | Returns the length of a string recursively |
-| 3 | `factorial` | `int factorial(int n);` | Returns the factorial of a number |
-| 4 | `_pow_recursion` | `int _pow_recursion(int x, int y);` | Returns x raised to the power y |
-| 5 | `_sqrt_recursion` | `int _sqrt_recursion(int n);` | Returns the natural square root of a number |
-| 6 | `is_prime_number` | `int is_prime_number(int n);` | Returns 1 if number is prime, else 0 |
+## Tasks Summary
 
----
+| Task | Description                                | Function Prototype                     | Example Output            |
+|------|-------------------------------------------|---------------------------------------|---------------------------|
+| 0    | Print a string recursively                 | `void _puts_recursion(char *s);`      | `Puts with recursion`     |
+| 1    | Print a string in reverse recursively     | `void _print_rev_recursion(char *s);` | `reklaW notloC`           |
+| 2    | Return string length recursively           | `int _strlen_recursion(char *s);`     | `14`                      |
+| 3    | Return factorial of a number recursively  | `int factorial(int n);`               | `120` for 5!              |
+| 4    | Compute x raised to power y recursively   | `int _pow_recursion(int x, int y);`   | `65536` for 2^16          |
+| 5    | Compute natural square root recursively   | `int _sqrt_recursion(int n);`         | `4` for 16                |
+| 6    | Check if number is prime recursively      | `int is_prime_number(int n);`         | `1` if prime, `0` otherwise|
+| 100  | Check if string is palindrome recursively| `int is_palindrome(char *s);`         | `1` for "level"           |
+| 101  | Compare strings with wildcard recursively | `int wildcmp(char *s1, char *s2);`   | `1` if matches, supports `*` |
+--------------------------------------------------------------------------------------------------------------------------------
 
-## Compilation Instructions
-Compile each task with its main file (and `_putchar.c` if needed). Examples:
-
-```bash
-# Task 0
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 _putchar.c 0-puts_recursion.c 0-main.c -o 0-puts_recursion
-
-# Task 1
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 _putchar.c 1-print_rev_recursion.c 1-main.c -o 1-print_rev_recursion
-
-# Task 2
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 2-strlen_recursion.c 2-main.c -o 2-strlen_recursion
-
-# Task 3
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 3-factorial.c 3-main.c -o 3-factorial
-
-# Task 4
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 _putchar.c 4-pow_recursion.c 4-main.c -o 4-pow
-
-# Task 5
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 5-sqrt_recursion.c 5-main.c -o 5-sqrt
-
-# Task 6
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 6-is_prime_number.c 6-main.c -o 6-prime
-
-
-
-######Run the executable:
-
-./0-puts_recursion
-./1-print_rev_recursion
-./2-strlen_recursion
-./3-factorial
+##Usage Examples
+./0-puts
+./1-rev
+./2-strlen
+./3-fact
 ./4-pow
 ./5-sqrt
 ./6-prime
+./100-pal
+./101-wild
 
+- >>>>>>>Each program can be tested using its corresponding main.c file.
+-----------------------------------------------------------------------------------------------------------------------------------
+##Key Concepts
+- Recursion: Function calls itself with a smaller problem instance. Each recursive function has:
+	- A base case: stops recursion.
+	- A recursive step: reduces the problem toward the base case.
 
+- Restrictions:
+	- No loops (for, while, do-while)
+	- No static variables
+	- No standard library functions (except _putchar for output)
 
+##Compilation Flags
 
+- All files are compiled with the following GCC flags:
 
+-Wall -Werror -Wextra -pedantic -std=gnu89
+
+>> These ensure code quality, adherence to C89 standard, and strict warning/error checks.
+
+-------------------------------------------------------------------------------------------------
+##Author											|
+												|
+##Aman Kasa – ALU Low-Level Programming								|
+##GitHub Repository: https://github.com/Aman-Kasa/alu-low_level_programming.git			|
+-------------------------------------------------------------------------------------------------
