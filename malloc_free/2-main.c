@@ -4,16 +4,16 @@
 
 int main(void)
 {
-    char *s;
+	char *s;
 
-    s = str_concat("Best ", "School");
-    if (s == NULL)
+	s = str_concat("Best ", "School");
+	if (s == NULL)
     {
-        printf("failed\n");
-        return (1);
+		printf("failed\n");
+		return (1);
     }
-    printf("%s\n", s);
-    free(s);
-    return (0);
+	printf("%s\n", s);
+	free(s);
+	return (0);
 }
 
