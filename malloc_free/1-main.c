@@ -4,16 +4,16 @@
 
 int main(void)
 {
-    char *s;
+    	char *s;
 
-    s = _strdup("Duplicated");
-    if (s == NULL)
+    	s = _strdup("Duplicated");
+        if (s == NULL)
     {
-        printf("failed to allocate memory\n");
-        return (1);
+		printf("failed to allocate memory\n");
+		return (1);
     }
-    printf("%s\n", s);
-    free(s);
-    return (0);
+	printf("%s\n", s);
+        free(s);
+        return (0);
 }
 
