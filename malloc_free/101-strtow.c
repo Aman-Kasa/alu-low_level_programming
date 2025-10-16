@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 /**
- * count_words - counts words in a string
+ * count_words - counts the number of words in a string
  * @str: input string
  * Return: number of words
  */
@@ -28,8 +28,8 @@ int count_words(char *str)
 }
 
 /**
- * word_len - counts length of a word starting at str
- * @str: string starting at word
+ * word_len - returns the length of a word starting at str
+ * @str: pointer to start of word
  * Return: length of word
  */
 int word_len(char *str)
@@ -42,14 +42,50 @@ int word_len(char *str)
 }
 
 /**
+ * copy_word - copies a single word from src to dest
+ * @src: source string
+ * @dest: destination string
+ * @len: length of word
+ */
+void copy_word(char *src, char *dest, int len)
+{
+	int i;
+
+	for (i = 0; i < len; i++)
+		dest[i] = src[i];
+	dest[i] = '\0';
+}
+
+/**
+ * allocate_words - allocates memory for all words
+ * @word_count: number of words
+ * Return: pointer to array of strings, or NULL
+ */
+char **allocate_words(int word_count)
+{
+	char **words;
+	int i;
+
+	words = malloc((word_count + 1) * sizeof(char *));
+	if (!words)
+		return (NULL);
+
+	for (i = 0; i < word_count; i++)
+		words[i] = NULL;
+	words[word_count] = NULL;
+
+	return (words);
+}
+
+/**
  * strtow - splits a string into words
  * @str: input string
- * Return: pointer to array of strings, or NULL
+ * Return: pointer to array of words, or NULL
  */
 char **strtow(char *str)
 {
 	char **words;
-	int i = 0, j, k = 0, wcount, wlen;
+	int i = 0, k = 0, wcount, wlen;
 
 	if (!str || *str == '\0')
 		return (NULL);
@@ -58,7 +94,7 @@ char **strtow(char *str)
 	if (wcount == 0)
 		return (NULL);
 
-	words = malloc((wcount + 1) * sizeof(char *));
+	words = allocate_words(wcount);
 	if (!words)
 		return (NULL);
 
@@ -82,9 +118,7 @@ char **strtow(char *str)
 			return (NULL);
 		}
 
-		for (j = 0; j < wlen; j++)
-			words[k][j] = str[i + j];
-		words[k][j] = '\0';
+		copy_word(str + i, words[k], wlen);
 		i += wlen;
 		k++;
 	}
