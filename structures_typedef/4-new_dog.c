@@ -2,6 +2,28 @@
 #include "dog.h"
 
 /**
+ * copy_string - duplicates a string
+ * @str: string to copy
+ *
+ * Return: pointer to new string, or NULL if malloc fails
+ */
+char *copy_string(char *str)
+{
+	int i, len;
+	char *copy;
+
+	len = 0;
+	while (str[len] != '\0')
+		len++;
+	copy = malloc(len + 1);
+	if (!copy)
+		return (NULL);
+	for (i = 0; i <= len; i++)
+		copy[i] = str[i];
+	return (copy);
+}
+
+/**
  * new_dog - Creates a new dog structure
  * @name: name of the dog
  * @age: age of the dog
@@ -12,45 +34,27 @@
 dog_t *new_dog(char *name, float age, char *owner)
 {
 	dog_t *d;
-	char *name_copy, *owner_copy;
-	int i, len;
 
-	/* Allocate memory for dog structure */
 	d = malloc(sizeof(dog_t));
 	if (!d)
 		return (NULL);
 
-	/* Allocate and copy name */
-	len = 0;
-	while (name[len] != '\0')
-		len++;
-	name_copy = malloc(len + 1);
-	if (!name_copy)
+	d->name = copy_string(name);
+	if (!d->name)
 	{
 		free(d);
 		return (NULL);
 	}
-	for (i = 0; i <= len; i++)
-		name_copy[i] = name[i];
 
-	/* Allocate and copy owner */
-	len = 0;
-	while (owner[len] != '\0')
-		len++;
-	owner_copy = malloc(len + 1);
-	if (!owner_copy)
+	d->owner = copy_string(owner);
+	if (!d->owner)
 	{
-		free(name_copy);
+		free(d->name);
 		free(d);
 		return (NULL);
 	}
-	for (i = 0; i <= len; i++)
-		owner_copy[i] = owner[i];
 
-	/* Set dog fields */
-	d->name = name_copy;
 	d->age = age;
-	d->owner = owner_copy;
 
 	return (d);
 }
