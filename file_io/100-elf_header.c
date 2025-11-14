@@ -4,14 +4,61 @@
 #include <fcntl.h>
 #include <elf.h>
 
-/* exit + print error */
-void print_error(char *msg)
+/**
+ * print_error - prints an error message and exits
+ * @msg: error message
+ * @file: filename (can be NULL)
+ */
+void print_error(char *msg, char *file)
 {
-	dprintf(STDERR_FILENO, "%s\n", msg);
+	if (file)
+		dprintf(STDERR_FILENO, "Error: %s %s\n", msg, file);
+	else
+		dprintf(STDERR_FILENO, "Error: %s\n", msg);
 	exit(98);
 }
 
-/* Print OS/ABI */
+/**
+ * swap16 - swap bytes for 16-bit big endian
+ * @val: value
+ * Return: swapped value
+ */
+unsigned short swap16(unsigned short val)
+{
+	return ((val >> 8) | (val << 8));
+}
+
+/**
+ * swap32 - swap bytes for 32-bit big endian
+ * @val: value
+ * Return: swapped value
+ */
+unsigned int swap32(unsigned int val)
+{
+	return (((val >> 24) & 0xff) |
+	        ((val >> 8) & 0xff00) |
+	        ((val << 8) & 0xff0000) |
+	        ((val << 24) & 0xff000000));
+}
+
+/**
+ * print_magic - prints ELF magic
+ * @e_ident: ELF identification bytes
+ */
+void print_magic(unsigned char *e_ident)
+{
+	int i;
+
+	printf("  Magic:   ");
+	for (i = 0; i < EI_NIDENT; i++)
+		printf("%02x%s", e_ident[i], i == EI_NIDENT - 1 ? "\n" : " ");
+}
+
+/**
+ * get_osabi - returns OS/ABI string
+ * @osabi: byte value
+ * Return: string
+ */
 const char *get_osabi(unsigned char osabi)
 {
 	switch (osabi)
@@ -26,34 +73,34 @@ const char *get_osabi(unsigned char osabi)
 	case ELFOSABI_TRU64: return "TRU64 UNIX";
 	case ELFOSABI_ARM: return "ARM";
 	case ELFOSABI_STANDALONE: return "Standalone App";
-	default:
-	{
-		static char buf[32];
-		snprintf(buf, sizeof(buf), "<unknown: %x>", osabi);
-		return buf;
-	}
+	default: return "<unknown>";
 	}
 }
 
-/* Print type */
-const char *get_type(uint16_t t)
+/**
+ * get_type - returns type string
+ * @type: e_type value
+ * Return: string
+ */
+const char *get_type(unsigned short type)
 {
-	switch (t)
+	switch (type)
 	{
 	case ET_NONE: return "NONE (None)";
 	case ET_REL: return "REL (Relocatable file)";
 	case ET_EXEC: return "EXEC (Executable file)";
 	case ET_DYN: return "DYN (Shared object file)";
 	case ET_CORE: return "CORE (Core file)";
-	default:
-	{
-		static char buf[32];
-		snprintf(buf, sizeof(buf), "<unknown: %x>", t);
-		return buf;
-	}
+	default: return "<unknown>";
 	}
 }
 
+/**
+ * main - displays ELF header info
+ * @argc: argument count
+ * @argv: argument vector
+ * Return: 0 on success
+ */
 int main(int argc, char *argv[])
 {
 	int fd, r;
@@ -63,83 +110,76 @@ int main(int argc, char *argv[])
 	int is_64;
 
 	if (argc != 2)
-		print_error("Usage: elf_header elf_filename");
+		print_error("Usage: elf_header elf_filename", NULL);
 
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
-		print_error("Error: Can't read file");
+		print_error("Can't read from file", argv[1]);
 
-	/* 1st read: e_ident */
 	r = read(fd, e_ident, EI_NIDENT);
 	if (r != EI_NIDENT)
-		print_error("Error: Can't read file");
+		print_error("Can't read from file", argv[1]);
 
-	/* verify ELF magic */
+	/* Verify ELF magic */
 	if (e_ident[EI_MAG0] != ELFMAG0 ||
-		e_ident[EI_MAG1] != ELFMAG1 ||
-		e_ident[EI_MAG2] != ELFMAG2 ||
-		e_ident[EI_MAG3] != ELFMAG3)
-		print_error("Error: Not an ELF file");
+	    e_ident[EI_MAG1] != ELFMAG1 ||
+	    e_ident[EI_MAG2] != ELFMAG2 ||
+	    e_ident[EI_MAG3] != ELFMAG3)
+		print_error("Not an ELF file", argv[1]);
 
 	is_64 = (e_ident[EI_CLASS] == ELFCLASS64);
 
-	/* lseek once */
 	if (lseek(fd, 0, SEEK_SET) == -1)
-		print_error("Error: Can't read file");
+		print_error("Can't read from file", argv[1]);
 
-	/* 2nd read: whole header */
 	if (is_64)
 	{
 		if (read(fd, &h64, sizeof(h64)) != sizeof(h64))
-			print_error("Error: Can't read file");
+			print_error("Can't read from file", argv[1]);
 	}
 	else
 	{
 		if (read(fd, &h32, sizeof(h32)) != sizeof(h32))
-			print_error("Error: Can't read file");
+			print_error("Can't read from file", argv[1]);
 	}
 
-	/* Output formatting */
 	printf("ELF Header:\n");
-	printf("  Magic:   ");
-	for (r = 0; r < EI_NIDENT; r++)
-		printf("%02x%s", e_ident[r], r == EI_NIDENT - 1 ? "" : " ");
-	printf("\n");
+	print_magic(e_ident);
 
 	printf("  Class:                             %s\n",
-		(e_ident[EI_CLASS] == ELFCLASS32) ? "ELF32" :
-		(e_ident[EI_CLASS] == ELFCLASS64) ? "ELF64" : "Unknown");
+	       (e_ident[EI_CLASS] == ELFCLASS32) ? "ELF32" : "ELF64");
 
 	printf("  Data:                              %s\n",
-		(e_ident[EI_DATA] == ELFDATA2LSB) ?
-		"2's complement, little endian" :
-		(e_ident[EI_DATA] == ELFDATA2MSB) ?
-		"2's complement, big endian" : "Unknown");
+	       (e_ident[EI_DATA] == ELFDATA2LSB) ?
+	       "2's complement, little endian" : "2's complement, big endian");
 
-	printf("  Version:                           %d (current)\n",
-		e_ident[EI_VERSION]);
-
-	printf("  OS/ABI:                            %s\n",
-		get_osabi(e_ident[EI_OSABI]));
-
-	printf("  ABI Version:                       %d\n",
-		e_ident[EI_ABIVERSION]);
+	printf("  Version:                           %d\n", e_ident[EI_VERSION]);
+	printf("  OS/ABI:                            %s\n", get_osabi(e_ident[EI_OSABI]));
+	printf("  ABI Version:                       %d\n", e_ident[EI_ABIVERSION]);
 
 	if (is_64)
 	{
-		printf("  Type:                              %s\n",
-			get_type(h64.e_type));
+		unsigned short type = h64.e_type;
+		if (e_ident[EI_DATA] == ELFDATA2MSB)
+			type = swap16(type);
 
+		printf("  Type:                              %s\n", get_type(type));
 		printf("  Entry point address:               %#lx\n",
-			(unsigned long)h64.e_entry);
+		       (unsigned long)h64.e_entry);
 	}
 	else
 	{
-		printf("  Type:                              %s\n",
-			get_type(h32.e_type));
+		unsigned short type = h32.e_type;
+		unsigned int entry = h32.e_entry;
 
-		printf("  Entry point address:               %#x\n",
-			h32.e_entry);
+		if (e_ident[EI_DATA] == ELFDATA2MSB)
+		{
+			type = swap16(type);
+			entry = swap32(entry);
+		}
+
+		printf("  Type:                              %s\n", get_type(type));
+		printf("  Entry point address:               %#x\n", entry);
 	}
 
 	close(fd);
