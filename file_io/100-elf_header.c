@@ -42,8 +42,8 @@ unsigned int swap32(unsigned int val)
 }
 
 /**
- * print_magic - prints ELF magic
- * @e_ident: ELF identification bytes
+ * print_magic - prints ELF magic bytes
+ * @e_ident: ELF identification array
  */
 void print_magic(unsigned char *e_ident)
 {
@@ -55,8 +55,8 @@ void print_magic(unsigned char *e_ident)
 }
 
 /**
- * get_osabi - returns OS/ABI string
- * @osabi: byte value
+ * get_osabi - returns string representation of OS/ABI
+ * @osabi: value
  * Return: string
  */
 const char *get_osabi(unsigned char osabi)
@@ -78,8 +78,8 @@ const char *get_osabi(unsigned char osabi)
 }
 
 /**
- * get_type - returns type string
- * @type: e_type value
+ * get_type - returns string representation of ELF type
+ * @type: value
  * Return: string
  */
 const char *get_type(unsigned short type)
@@ -96,14 +96,67 @@ const char *get_type(unsigned short type)
 }
 
 /**
- * main - displays ELF header info
+ * print_header_64 - prints ELF64 header info
+ * @h: pointer to Elf64_Ehdr
+ * @e_ident: identification array
+ */
+void print_header_64(Elf64_Ehdr *h, unsigned char *e_ident)
+{
+	unsigned short type = h->e_type;
+
+	if (e_ident[EI_DATA] == ELFDATA2MSB)
+		type = swap16(type);
+
+	printf("  Class:                             ELF64\n");
+	printf("  Data:                              %s\n",
+	       e_ident[EI_DATA] == ELFDATA2LSB ?
+	       "2's complement, little endian" :
+	       "2's complement, big endian");
+	printf("  Version:                           %d\n", e_ident[EI_VERSION]);
+	printf("  OS/ABI:                            %s\n", get_osabi(e_ident[EI_OSABI]));
+	printf("  ABI Version:                       %d\n", e_ident[EI_ABIVERSION]);
+	printf("  Type:                              %s\n", get_type(type));
+	printf("  Entry point address:               %#lx\n",
+	       (unsigned long)h->e_entry);
+}
+
+/**
+ * print_header_32 - prints ELF32 header info
+ * @h: pointer to Elf32_Ehdr
+ * @e_ident: identification array
+ */
+void print_header_32(Elf32_Ehdr *h, unsigned char *e_ident)
+{
+	unsigned short type = h->e_type;
+	unsigned int entry = h->e_entry;
+
+	if (e_ident[EI_DATA] == ELFDATA2MSB)
+	{
+		type = swap16(type);
+		entry = swap32(entry);
+	}
+
+	printf("  Class:                             ELF32\n");
+	printf("  Data:                              %s\n",
+	       e_ident[EI_DATA] == ELFDATA2LSB ?
+	       "2's complement, little endian" :
+	       "2's complement, big endian");
+	printf("  Version:                           %d\n", e_ident[EI_VERSION]);
+	printf("  OS/ABI:                            %s\n", get_osabi(e_ident[EI_OSABI]));
+	printf("  ABI Version:                       %d\n", e_ident[EI_ABIVERSION]);
+	printf("  Type:                              %s\n", get_type(type));
+	printf("  Entry point address:               %#x\n", entry);
+}
+
+/**
+ * main - displays ELF header info for a given file
  * @argc: argument count
  * @argv: argument vector
  * Return: 0 on success
  */
 int main(int argc, char *argv[])
 {
-	int fd, r;
+	int fd;
 	unsigned char e_ident[EI_NIDENT];
 	Elf64_Ehdr h64;
 	Elf32_Ehdr h32;
@@ -116,11 +169,9 @@ int main(int argc, char *argv[])
 	if (fd == -1)
 		print_error("Can't read from file", argv[1]);
 
-	r = read(fd, e_ident, EI_NIDENT);
-	if (r != EI_NIDENT)
+	if (read(fd, e_ident, EI_NIDENT) != EI_NIDENT)
 		print_error("Can't read from file", argv[1]);
 
-	/* Verify ELF magic */
 	if (e_ident[EI_MAG0] != ELFMAG0 ||
 	    e_ident[EI_MAG1] != ELFMAG1 ||
 	    e_ident[EI_MAG2] != ELFMAG2 ||
@@ -146,43 +197,14 @@ int main(int argc, char *argv[])
 	printf("ELF Header:\n");
 	print_magic(e_ident);
 
-	printf("  Class:                             %s\n",
-	       (e_ident[EI_CLASS] == ELFCLASS32) ? "ELF32" : "ELF64");
-
-	printf("  Data:                              %s\n",
-	       (e_ident[EI_DATA] == ELFDATA2LSB) ?
-	       "2's complement, little endian" : "2's complement, big endian");
-
-	printf("  Version:                           %d\n", e_ident[EI_VERSION]);
-	printf("  OS/ABI:                            %s\n", get_osabi(e_ident[EI_OSABI]));
-	printf("  ABI Version:                       %d\n", e_ident[EI_ABIVERSION]);
-
 	if (is_64)
-	{
-		unsigned short type = h64.e_type;
-		if (e_ident[EI_DATA] == ELFDATA2MSB)
-			type = swap16(type);
-
-		printf("  Type:                              %s\n", get_type(type));
-		printf("  Entry point address:               %#lx\n",
-		       (unsigned long)h64.e_entry);
-	}
+		print_header_64(&h64, e_ident);
 	else
-	{
-		unsigned short type = h32.e_type;
-		unsigned int entry = h32.e_entry;
+		print_header_32(&h32, e_ident);
 
-		if (e_ident[EI_DATA] == ELFDATA2MSB)
-		{
-			type = swap16(type);
-			entry = swap32(entry);
-		}
+	if (close(fd) == -1)
+		print_error("Can't close fd", NULL);
 
-		printf("  Type:                              %s\n", get_type(type));
-		printf("  Entry point address:               %#x\n", entry);
-	}
-
-	close(fd);
 	return (0);
 }
 
